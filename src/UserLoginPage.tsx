@@ -14,6 +14,15 @@ const UserLoginPage: React.FC = () => {
       document.body.classList.remove("#d1d3d4");
     };
   }, []);
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_URL)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }, []);
   return (
     <>
       <h1 className="fixed top-56 left-1/2 transform -translate-x-1/2 text-black text-xl font-bold">
