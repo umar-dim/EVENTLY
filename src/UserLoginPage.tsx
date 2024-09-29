@@ -5,24 +5,24 @@ import { useEffect } from "react";
 //page where users can log in
 
 const UserLoginPage: React.FC = () => {
-  useEffect(() => {
-    // Change the body's background color when this component is mounted
-    document.body.classList.add("#d1d3d4"); // Apply Tailwind background class
+  // useEffect(() => {
+  //   // Change the body's background color when this component is mounted
+  //   document.body.classList.add("#d1d3d4"); // Apply Tailwind background class
 
-    return () => {
-      // Reset the body's background color when this component is unmounted
-      document.body.classList.remove("#d1d3d4");
-    };
-  }, []);
-  useEffect(() => {
-    fetch(import.meta.env.VITE_API_URL)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-      });
-  }, []);
+  //   return () => {
+  //     // Reset the body's background color when this component is unmounted
+  //     document.body.classList.remove("#d1d3d4");
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   fetch(import.meta.env.VITE_API_URL)
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //     });
+  // }, []);
   return (
     <>
       <h1 className="fixed top-56 left-1/2 transform -translate-x-1/2 text-black text-xl font-bold">
