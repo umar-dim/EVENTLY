@@ -14,6 +14,7 @@ const multer = require("multer");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const sharp = require("sharp");
+const path = require("path");
 const {
   S3Client,
   PutObjectCommand,
@@ -46,7 +47,10 @@ const s3RandomImgName = (bytes = 32) =>
 //upload single image, parameter is name of image your uploading
 
 //connect to mongodb in order to interact with db
-mongoose.connect(url);
+mongoose
+  .connect(url)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("MongoDB connection error:", err));
 
 //create mongodb store to store sessions in the sessions collection
 
@@ -121,6 +125,9 @@ app.use(
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
+      secure: false,
+      httpOnly: true,
+      sameSite: "lax",
     },
   })
 );
@@ -147,9 +154,7 @@ app.use(passport.session());
 //create url and store in users document so user can fetch and see profile picture
 
 app.get("/dashboard", async (req, res) => {
-  console.log(req.session);
   if (req.isAuthenticated()) {
-    console.log("we are here");
     const reqUser = req.user;
     const userId = reqUser.id;
     const user = await users.findById(userId);
@@ -161,12 +166,11 @@ app.get("/dashboard", async (req, res) => {
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
     user.profileImgUrl = url;
     await user.save();
-    console.log(user?.profileImgUrl);
     res
       .status(200)
       .json({ data: user?.profileImgUrl, username: user.username });
   } else {
-    console.log(req.user);
+    // res.redirect("/UserLogin");
     res.status(404).json({ error: "Authentication Error" });
   }
 });
@@ -260,11 +264,32 @@ app.post("/registerUser", async (req, res) => {
   }
 });
 
-//get request to test lambda
-app.get("/", (req, res) => {
-  res.json("Hello this is my get req!");
+app.get("/logout", function (req, res) {
+  req.logout(function (err) {
+    if (err) {
+      // Handle error here
+      console.log("there is an error");
+      res.status(404).json({ error: "Server error" }); // Redirect to error handling page
+    } else {
+      res.status(200).json({ success: "Success you logged out!" }); // Redirect to home page or login
+    }
+  });
 });
+// app.get("/", (req, res) => {
+//   if (!req.isAuthenticated()) {
+//     res.redirect("/UserLogin");
+//   } else {
+//     res.redirect("/dashboard");
+//   }
+// });
 
+// Serve static files from the React app's build folder
+app.use(express.static(path.join(__dirname, "../build")));
+
+// Handle any other routes and direct them to the React app
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
+});
 app.listen(port, () => {
   console.log(`App is running at ${port} `);
 });

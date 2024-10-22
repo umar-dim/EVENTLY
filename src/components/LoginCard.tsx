@@ -29,7 +29,7 @@ const LoginCard: React.FC = () => {
     if (formData.email === "" || formData.password === "") {
       alert("field is empty");
     } else {
-      let request = await fetch("http://localhost:3000/login", {
+      let request = await fetch("https://demo.evently.wiki/login", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -49,7 +49,7 @@ const LoginCard: React.FC = () => {
         alert(`${message}`);
       } else {
         console.log(result);
-        navigate("/Dashboard");
+        navigate("/dashboard");
       }
     }
   }

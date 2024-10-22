@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as React from "react";
-import UserLoginPage from "../UserLoginPage";
+
 //component of the user register page
 //card component and users can put their information in order to register
 
@@ -39,7 +39,7 @@ const UserRegisterCard: React.FC = () => {
     ) {
       alert("field is empty");
     } else {
-      let request = await fetch("http://localhost:3000/registerUser", {
+      let request = await fetch("https://demo.evently.wiki/registerUser", {
         method: "POST",
         headers: {
           Accept: "application/json",

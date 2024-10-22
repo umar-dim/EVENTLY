@@ -2,26 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Navbar from "./components/Navbar";
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   //make states into object
-  interface currentUser {
-    profileImg: string;
-    username: string;
-  }
+  // interface currentUser {
+  //   profileImg: string;
+  //   username: string;
+  // }
   const [profileImg, setProfileImg] = useState();
   const [username, setUsername] = useState();
 
   useEffect(() => {
     async function getDashboardData() {
-      const request = await fetch("http://localhost:3000/dashboard", {
+      const request = await fetch("https://demo.evently.wiki/dashboard", {
         method: "GET",
         credentials: "include",
       });
-      console.log(window.document.cookie);
+      // console.log(window.document.cookie);
 
       const result = await request.json();
       const message = result.error ? result.error : "";
@@ -29,7 +28,7 @@ const Dashboard: React.FC = () => {
       if (message.length > 0) {
         navigate("/UserLogin");
       } else {
-        console.log(result);
+        // console.log(result);
         setProfileImg(result.data);
         setUsername(result.username);
       }

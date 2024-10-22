@@ -1,6 +1,5 @@
 import LoginCard from "./components/LoginCard";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
 
 //page where users can log in
 
