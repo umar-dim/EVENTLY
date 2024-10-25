@@ -1,14 +1,16 @@
 //card style component where users can login
 //use a prop in order to know if this is an org logging in or a user
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+// import { useNavigate } from "react-router-dom";
 
 const LoginCard: React.FC = () => {
   interface Form {
     email: string;
     password: string;
   }
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [formData, setFormData] = useState<Form>({
     email: "",
     password: "",
@@ -41,15 +43,14 @@ const LoginCard: React.FC = () => {
           password: formData.password,
         }),
       });
+      if (!request.ok) {
+        const result = await request.json();
+        const message = result.error ? result.error : "";
+        console.log(message);
 
-      const result = await request.json();
-      const message = result.error ? result.error : "";
-      console.log(message);
-      if (message.length > 0) {
         alert(`${message}`);
       } else {
-        console.log(result);
-        navigate("/dashboard");
+        window.location.href = "https://demo.evently.wiki/Dashboard";
       }
     }
   }
@@ -60,19 +61,50 @@ const LoginCard: React.FC = () => {
         style={{ backgroundColor: "#ffff" }}
         className=" rounded-xl  w-[450px] h-[540px] shadow-md space-x-5"
       >
-        <button className="mt-24 ml-5 bg-blue-500 font-bold text-white text-center py-2 rounded-sm w-72 h-11">
-          <div className="flex flex-row">
-            <div className="ml-1 -mt-1  flex justify-center items-center h-8 w-8 bg-gray-50 border-none">
-              <img
-                className="  h-6 w-6 object-cover"
-                src="https://user-images.githubusercontent.com/194400/70987158-4069c900-20b7-11ea-892e-8a2e1166b6b7.png"
-              />
-            </div>
-            <span className="text-white font-bold ml-10">
-              Sign in with Google
-            </span>
-          </div>
-        </button>
+        <div className="flex items-center justify-center pt-28 rounded-sm   h-11">
+          <GoogleLogin
+            onSuccess={async (credentialResponse) => {
+              // console.log(credentialResponse);
+              if (credentialResponse.credential) {
+                const decoded: any = jwtDecode(credentialResponse.credential);
+                const email = decoded.email;
+                const profileImgUrl = decoded.picture;
+                const name = decoded.given_name;
+                // console.log(
+                //   `email: :${email}, profileImg: ${profileImgUrl}, and name is: ${name}`
+                // );
+                let request = await fetch(
+                  "https://demo.evently.wiki/google-login",
+                  {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      name: name,
+                      email: email,
+                      profileImgUrl: profileImgUrl,
+                    }),
+                  }
+                );
+                if (!request.ok) {
+                  const result = await request.json();
+                  const message = result.error ? result.error : "";
+                  console.log(message);
+
+                  alert(`${message}`);
+                } else {
+                  window.location.href = "https://demo.evently.wiki/Dashboard";
+                }
+              }
+            }}
+            onError={() => {
+              alert("Login Failed");
+            }}
+          />
+        </div>
         <div className="flex items-center justify-center mt-10 mb-2">
           <span className="border-t border-gray-300 w-1/4"></span>
           <span className="mx-4 text-gray-500">OR</span>

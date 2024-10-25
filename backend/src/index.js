@@ -24,6 +24,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const users = require("./models/users.js");
 
 const app = express();
+const CLIENT_HOME_URL = "https://demo.evently.wiki/Dashboard";
 dotenv.config();
 const port = process.env.PORT || 3000;
 const url = process.env.DATABASE_URL || "empty";
@@ -64,6 +65,41 @@ mongoose
 //get the email field in order to get the user in the db
 //check if passwords match if so serialize user
 //else return false
+const GoogleStrategy = require("passport-google-oauth2").Strategy;
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "https://demo.evently.wiki/auth/google/callback",
+      passReqToCallback: true,
+    },
+    function (request, accessToken, refreshToken, profile, done) {
+      users.findOne({ googleId: profile.id }, async (err, existingUser) => {
+        try {
+          if (err) {
+            return done(err);
+          }
+          if (existingUser) {
+            return done(null, existingUser);
+          } else {
+            const newUser = new users({
+              googleId: profile.id,
+              username: profile.displayName,
+              email: profile.emails[0].value,
+              profileImgUrl: profile.photos[0].value,
+            });
+            await newUser.save();
+            return done(null, newUser);
+          }
+        } catch (e) {
+          done(e);
+        }
+      });
+    }
+  )
+);
 
 passport.use(
   new LocalStrategy(
@@ -119,13 +155,14 @@ app.use(
     secret: secretKey,
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     store: MongoStore.create({
       mongoUrl: url,
       stringify: true,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       sameSite: "lax",
     },
@@ -153,19 +190,21 @@ app.use(passport.session());
 //route that checks if user is authenticated if so
 //create url and store in users document so user can fetch and see profile picture
 
-app.get("/dashboard", async (req, res) => {
+app.get("/api/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
     const reqUser = req.user;
     const userId = reqUser.id;
     const user = await users.findById(userId);
-    const getObjectParams = {
-      Bucket: process.env.BUCKET_NAME,
-      Key: user.imageName,
-    };
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-    user.profileImgUrl = url;
-    await user.save();
+    if (user.imageName) {
+      const getObjectParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: user.imageName,
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      user.profileImgUrl = url;
+      await user.save();
+    }
     res
       .status(200)
       .json({ data: user?.profileImgUrl, username: user.username });
@@ -177,7 +216,20 @@ app.get("/dashboard", async (req, res) => {
 //when user sends credientals use passport strategy
 //if true sends success message
 //else send error message
-
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["email", "profile"] })
+);
+app.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/auth/google/failure",
+    successRedirect: CLIENT_HOME_URL,
+  })
+);
+app.get("/auth/google/failure", (req, res) => {
+  res.status(404).send("<h1>404 - Authentication Failed</h1>");
+});
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -191,7 +243,34 @@ app.get("/login-failure", (req, res) => {
 });
 
 app.get("/login-success", (req, res) => {
-  res.status(200).json({ success: "Success" });
+  res.redirect("/");
+});
+app.post("/google-login", async (req, res) => {
+  const { name, email, profileImgUrl } = req.body;
+  const user = await users.findOne({ email: email });
+  if (user) {
+    req.login(user, function (err) {
+      if (err) {
+        return res.redirect("/login-failure");
+      }
+      return res.redirect("/login-success");
+    });
+  } else {
+    const newUser = new users({
+      username: name,
+      email: email,
+      password: "",
+      imageName: "",
+      profileImgUrl: profileImgUrl,
+    });
+    await newUser.save();
+    req.login(newUser, function (err) {
+      if (err) {
+        return res.redirect("/login-failure");
+      }
+      return res.redirect("/login-success");
+    });
+  }
 });
 
 app.post("/uploadImg", upload.single("profileImg"), async (req, res) => {
@@ -275,13 +354,13 @@ app.get("/logout", function (req, res) {
     }
   });
 });
-// app.get("/", (req, res) => {
-//   if (!req.isAuthenticated()) {
-//     res.redirect("/UserLogin");
-//   } else {
-//     res.redirect("/dashboard");
-//   }
-// });
+app.get("/", (req, res) => {
+  if (!req.isAuthenticated()) {
+    res.redirect("/UserLogin");
+  } else {
+    res.redirect("/Dashboard");
+  }
+});
 
 // Serve static files from the React app's build folder
 app.use(express.static(path.join(__dirname, "../build")));

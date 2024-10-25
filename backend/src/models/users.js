@@ -5,9 +5,9 @@ const { Schema, model } = mongoose;
 //create a schema based on the users
 
 const UsersSchema = new Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  password: { type: String, required: false },
   imageName: { type: String, required: false },
   profileImgUrl: { type: String, required: false },
 });

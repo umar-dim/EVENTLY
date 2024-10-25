@@ -1,10 +1,10 @@
 //handle when user isnt authenticated
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   //make states into object
   // interface currentUser {
@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     async function getDashboardData() {
-      const request = await fetch("https://demo.evently.wiki/dashboard", {
+      const request = await fetch("https://demo.evently.wiki/api/dashboard", {
         method: "GET",
         credentials: "include",
       });
@@ -25,13 +25,10 @@ const Dashboard: React.FC = () => {
       const result = await request.json();
       const message = result.error ? result.error : "";
       console.log(message);
-      if (message.length > 0) {
-        navigate("/UserLogin");
-      } else {
-        // console.log(result);
-        setProfileImg(result.data);
-        setUsername(result.username);
-      }
+
+      // console.log(result);
+      setProfileImg(result.data);
+      setUsername(result.username);
     }
     getDashboardData();
   }, []);
