@@ -56,13 +56,13 @@ async function scrapeUICEvents() {
 // Export the function for use in other files
 module.exports = scrapeUICEvents;
 
-
 // Usage example
 
 // const scrapeUICEvents = require("./webscrape");
 
-(async () => {
-	const eventsData = await scrapeUICEvents();
-	console.log(`Scraped ${eventsData.length} events.`);
-	console.log(eventsData);
-})();
+// (async () => {
+// 	const eventsData = await scrapeUICEvents();
+// console.log(`Scraped ${eventsData.length} events.`);
+// console.log(eventsData);
+
+// })();
