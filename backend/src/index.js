@@ -22,7 +22,7 @@ const {
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const users = require("./models/users.js");
-
+const Event = require("./models/events.js");
 const app = express();
 const CLIENT_HOME_URL = "https://demo.evently.wiki/Dashboard";
 dotenv.config();
@@ -192,27 +192,31 @@ app.use(passport.session());
 
 app.get("/api/dashboard", async (req, res) => {
   if (req.isAuthenticated()) {
-		const reqUser = req.user;
-		const userId = reqUser.id;
-		const user = await users.findById(userId);
-		if (user.imageName) {
-			const getObjectParams = {
-				Bucket: process.env.BUCKET_NAME,
-				Key: user.imageName,
-			};
-			const command = new GetObjectCommand(getObjectParams);
-			const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-			user.profileImgUrl = url;
-			await user.save();
-		}
-		// Fetch all events from the database
+    const reqUser = req.user;
+    const userId = reqUser.id;
+    const user = await users.findById(userId);
+    if (user.imageName) {
+      const getObjectParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: user.imageName,
+      };
+      const command = new GetObjectCommand(getObjectParams);
+      const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      user.profileImgUrl = url;
+      await user.save();
+    }
+    // Fetch all events from the database
     const events = await Event.find();
     // console.log(events);
 
-		res
-			.status(200)
-			.json({ data: user?.profileImgUrl, username: user.username, events: events });
-	} else {
+    res
+      .status(200)
+      .json({
+        data: user?.profileImgUrl,
+        username: user.username,
+        events: events,
+      });
+  } else {
     // res.redirect("/UserLogin");
     res.status(404).json({ error: "Authentication Error" });
   }

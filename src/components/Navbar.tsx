@@ -7,7 +7,7 @@ interface Props {
 const Navbar: React.FC<Props> = ({ profileImgUrl }) => {
   const navigate = useNavigate();
   async function Logout() {
-    let request = await fetch("https://demo.evently.wiki/logout", {
+    let request = await fetch("http://localhost:3000/logout", {
       method: "GET",
       credentials: "include",
     });
