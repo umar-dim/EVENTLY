@@ -24,7 +24,7 @@ const Dashboard: React.FC = () => {
   const [events, setEvents] = useState<Event[] | null>(null);
   useEffect(() => {
     async function getDashboardData() {
-      const request = await fetch("http://localhost:3000/api/dashboard", {
+      const request = await fetch("https://demo.evently.wiki/api/dashboard", {
         method: "GET",
         credentials: "include",
       });

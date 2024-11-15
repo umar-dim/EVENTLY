@@ -31,7 +31,7 @@ const LoginCard: React.FC = () => {
     if (formData.email === "" || formData.password === "") {
       alert("field is empty");
     } else {
-      let request = await fetch("http://localhost:3000/login", {
+      let request = await fetch("https://demo.evently.wiki/login", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -75,7 +75,7 @@ const LoginCard: React.FC = () => {
                 //   `email: :${email}, profileImg: ${profileImgUrl}, and name is: ${name}`
                 // );
                 let request = await fetch(
-                  "http://localhost:3000/google-login",
+                  "https://demo.evently.wiki/google-login",
                   {
                     method: "POST",
                     credentials: "include",
@@ -97,7 +97,7 @@ const LoginCard: React.FC = () => {
 
                   alert(`${message}`);
                 } else {
-                  window.location.href = "http://localhost:5173/Dashboard";
+                  window.location.href = "https://demo.evently.wiki/Dashboard";
                 }
               }
             }}

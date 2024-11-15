@@ -65,41 +65,6 @@ mongoose
 //get the email field in order to get the user in the db
 //check if passwords match if so serialize user
 //else return false
-const GoogleStrategy = require("passport-google-oauth2").Strategy;
-
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://demo.evently.wiki/auth/google/callback",
-      passReqToCallback: true,
-    },
-    function (request, accessToken, refreshToken, profile, done) {
-      users.findOne({ googleId: profile.id }, async (err, existingUser) => {
-        try {
-          if (err) {
-            return done(err);
-          }
-          if (existingUser) {
-            return done(null, existingUser);
-          } else {
-            const newUser = new users({
-              googleId: profile.id,
-              username: profile.displayName,
-              email: profile.emails[0].value,
-              profileImgUrl: profile.photos[0].value,
-            });
-            await newUser.save();
-            return done(null, newUser);
-          }
-        } catch (e) {
-          done(e);
-        }
-      });
-    }
-  )
-);
 
 passport.use(
   new LocalStrategy(
@@ -209,13 +174,11 @@ app.get("/api/dashboard", async (req, res) => {
     const events = await Event.find();
     // console.log(events);
 
-    res
-      .status(200)
-      .json({
-        data: user?.profileImgUrl,
-        username: user.username,
-        events: events,
-      });
+    res.status(200).json({
+      data: user?.profileImgUrl,
+      username: user.username,
+      events: events,
+    });
   } else {
     // res.redirect("/UserLogin");
     res.status(404).json({ error: "Authentication Error" });
@@ -224,20 +187,7 @@ app.get("/api/dashboard", async (req, res) => {
 //when user sends credientals use passport strategy
 //if true sends success message
 //else send error message
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["email", "profile"] })
-);
-app.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/auth/google/failure",
-    successRedirect: CLIENT_HOME_URL,
-  })
-);
-app.get("/auth/google/failure", (req, res) => {
-  res.status(404).send("<h1>404 - Authentication Failed</h1>");
-});
+
 app.post(
   "/login",
   passport.authenticate("local", {
