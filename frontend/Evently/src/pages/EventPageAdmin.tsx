@@ -13,7 +13,7 @@ interface EventPageProps {
 	organization: string; // Add organization field if needed
 }
 
-const EventPage: React.FC = () => {
+const EventPageAdmin: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 
@@ -75,4 +75,4 @@ const EventPage: React.FC = () => {
 	);
 };
 
-export default EventPage;
+export default EventPageAdmin;
