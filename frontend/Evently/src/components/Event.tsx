@@ -4,40 +4,38 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 
 interface EventCardProps {
-  _id: string;
-  title: string;
-  date: string;
-  time: string;
-  location: string;
-  link: string;
+	_id: string;
+	title: string;
+	date: string;
+	time: string;
+	location: string;
+	link: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
-  _id,
-  title,
-  date,
-  time,
-  location,
-  link,
+	_id,
+	title,
+	date,
+	time,
+	location,
+	link,
 }) => {
+	const navigate = useNavigate();
 
-  const navigate = useNavigate();
+	const handleCardClick = () => {
+		navigate(`/event/${_id}`, {
+			state: {
+				_id,
+				title,
+				date,
+				time,
+				location,
+				link,
+			},
+		});
+	};
 
-const handleCardClick = () => {
-	navigate(`/event/${_id}`, {
-		state: {
-			_id,
-			title,
-			date,
-			time,
-			location,
-			link,
-		},
-	});
-};
-
-
-  return (
+	return (
 		<>
 			<div
 				className="flex flex-col   mt-10 w- px-5  "
@@ -88,6 +86,6 @@ const handleCardClick = () => {
 	);
 };
 {
-  /* */
+	/* */
 }
 export default EventCard;

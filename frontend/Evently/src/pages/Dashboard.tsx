@@ -1,9 +1,9 @@
 //handle when user isnt authenticated
 
 import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import EventCard from "./components/event";
+import Navbar from "../components/Navbar";
+import EventCard from "../components/event";
+
 const Dashboard: React.FC = () => {
   // const navigate = useNavigate();
   interface Event {
@@ -14,11 +14,7 @@ const Dashboard: React.FC = () => {
     location: string;
     link: string;
   }
-  //make states into object
-  // interface currentUser {
-  //   profileImg: string;
-  //   username: string;
-  // }
+
   const [profileImg, setProfileImg] = useState();
   const [username, setUsername] = useState();
   const [events, setEvents] = useState<Event[] | null>(null);
@@ -34,11 +30,9 @@ const Dashboard: React.FC = () => {
       const message = result.error ? result.error : "";
       console.log(message);
 
-      console.log(result);
       setProfileImg(result.data);
       setUsername(result.username);
       setEvents(result.events);
-      console.log(events);
     }
     getDashboardData();
   }, []);

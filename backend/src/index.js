@@ -188,6 +188,14 @@ app.get("/api/dashboard", async (req, res) => {
 //if true sends success message
 //else send error message
 
+app.get("/events/:id", async (req, res) => {
+  const { id } = req.params;
+  // const event = await Event.findById(id);
+  console.log(id);
+  // console.log(event);
+  // res.status(200).json(event);  
+});
+
 app.post(
   "/login",
   passport.authenticate("local", {
