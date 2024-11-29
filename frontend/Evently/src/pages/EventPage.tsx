@@ -9,8 +9,8 @@ interface EventPageProps {
 	time: string;
 	location: string;
 	link: string;
-	description: string; // Add a description field
-	organization: string; // Add organization field if needed
+	username: string; // Add a description field
+	profileImg: string; // Add organization field if needed
 }
 
 const EventPage: React.FC = () => {
@@ -25,12 +25,28 @@ const EventPage: React.FC = () => {
 		time: "Unknown Time",
 		location: "Unknown Location",
 		link: "",
+		username: "",
+		profileImg: "",
 	};
 
 	// Handlers
-	const handleRSVP = () => {
+	const handleRSVP = async () => {
 		// Add logic for RSVP, e.g., API call to register
-		alert(`You have RSVPed for: ${event.title}`);
+		const response = await fetch("http://localhost:3000/events/rsvp", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ eventId: event._id, username: event.username }),
+		})
+		const result = await response.json();
+		console.log(result);
+		if (result.success) {
+			alert(result.success);
+		} else {
+			alert(result.error);
+		}
+		// alert(`You have RSVPed for: ${event.title}`);
 	};
 
 	const handleOpenCamera = () => {
@@ -41,15 +57,15 @@ const EventPage: React.FC = () => {
 	return (
 		<>
 			<div className="flex flex-col items-center mt-10">
-				<h1 className="text-4xl font-bold mb-5">{event.title}</h1>
+				<h1 className="text-4xl font-bold text-black mb-5">{event.title}</h1>
 				<div className="w-3/4 p-5 border-2 rounded-lg shadow-md">
-					<p className="text-lg">
+					<p className="text-lg text-black">
 						<strong>Date:</strong> {event.date}
 					</p>
-					<p className="text-lg">
+					<p className="text-lg text-black">
 						<strong>Time:</strong> {event.time}
 					</p>
-					<p className="text-lg">
+					<p className="text-lg text-black">
 						<strong>Location:</strong> {event.location}
 					</p>
 					<a
@@ -58,9 +74,9 @@ const EventPage: React.FC = () => {
 						rel="noopener noreferrer"
 						className="text-blue-500 hover:text-blue-700"
 					>
-						View Event
+						Official Link
 					</a>
-					<div className="flex mt-5 space-x-4">
+					<div className="flex justify-center mt-5 space-x-4">
 						<button
 							onClick={handleRSVP}
 							className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
@@ -87,3 +103,4 @@ const EventPage: React.FC = () => {
 };
 
 export default EventPage;
+

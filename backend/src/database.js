@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const eventModel = require("./models/events.js");
 const url = process.env.DATABASE_URL || "empty";
 
 //connect to mongodb in order to interact with db
@@ -10,6 +9,7 @@ mongoose
 
 // Model definition - only creates it if it doesn't already exist in the database
 const Event = mongoose.models.Event || mongoose.model("Event", eventModel);
+const user = mongoose.models.User || mongoose.model("User", users);
 
 // Function to check for existing events and insert new ones if necessary
 async function updateEvents(newEvents) {
@@ -46,3 +46,47 @@ async function updateEvents(newEvents) {
 		console.error("Error updating events:", err);
 	}
 }
+
+async function addUserRsvp(username, eventId, res) {
+	// get the user schama form the database and log it 
+	try {
+		// const user = await users.findOne({ username: username });
+		const rsvpuser = await user.findOne({ username: username });
+		const rsvpevent = await Event.findOne({ _id: eventId });
+		// console.log(rsvpuser);
+		// console.log(rsvpevent);
+		if (rsvpuser.rsvps === undefined) {
+			rsvpuser.rsvps = [];
+		}
+
+		if (rsvpuser.rsvpsId.includes(eventId)) {
+			console.log("Already RSVP'd");
+		
+			return res.status(200).json({ error: "Already RSVP'd" });
+		} else {
+			rsvpuser.rsvpsId.push(eventId);
+			rsvpuser.rsvps.push(rsvpevent);
+			await rsvpuser.save();
+			console.log(rsvpuser);
+			return res.status(200).json({ success: "Success! RSVP added" });
+		}
+
+		// const test = await Event.findOne({ _id: eventId });
+		// console.log(test);
+	} catch (err) {
+		console.error("Error adding RSVP:", err);
+	}
+
+}
+
+async function getRsvpEvents(username) {
+	try {
+		const user = await user.findOne({ username: username });
+		return res.status(200).json({ events: user.rsvps });
+	} catch (err) {
+		console.error("Error getting events:", err);
+		return res.status(500).json({ error: "Server error" });
+	}
+}
+
+module.exports = { updateEvents, addUserRsvp, getRsvpEvents };

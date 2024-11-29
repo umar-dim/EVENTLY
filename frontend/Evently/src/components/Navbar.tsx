@@ -29,9 +29,9 @@ const Navbar: React.FC<Props> = ({ profileImgUrl }) => {
         style={{ backgroundColor: "#4070F4" }}
         className="fixed top-0 left-0  flex flex-row items-center text-white font-bold  w-full py-2"
       >
-        <h1 className="ml-8 text-xl">Evently</h1>
-        <span className="ml-16 cursor-pointer">Profile</span>
-        <span className="ml-5 cursor-pointer">Events</span>
+        <h1 onClick={() => navigate("/Dashboard")} className="ml-8 text-xl">Evently</h1>
+        {/* <span className="ml-16 cursor-pointer">Profile</span> */}
+        <span onClick={() => navigate("/rsvp")} className="ml-5 cursor-pointer">Rsvp Events</span>
         <span onClick={Logout} className="ml-5 cursor-pointer">
           Logout
         </span>

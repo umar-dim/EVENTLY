@@ -10,6 +10,8 @@ interface EventCardProps {
 	time: string;
 	location: string;
 	link: string;
+	username: string;
+	profileImg: string;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -19,6 +21,8 @@ const EventCard: React.FC<EventCardProps> = ({
 	time,
 	location,
 	link,
+	username,
+	profileImg,
 }) => {
 	const navigate = useNavigate();
 
@@ -31,6 +35,8 @@ const EventCard: React.FC<EventCardProps> = ({
 				time,
 				location,
 				link,
+				username,
+				profileImg,
 			},
 		});
 	};
@@ -40,6 +46,7 @@ const EventCard: React.FC<EventCardProps> = ({
 			<div
 				className="flex flex-col   mt-10 w- px-5  "
 				onClick={handleCardClick}
+				style={{ cursor: "pointer" }}
 			>
 				<div className="flex flex-col w-full mr-10 rounded-md border-2 text-left ">
 					<h1 className="text-xl ml-3 mt-3 ">{title}</h1>
@@ -53,7 +60,7 @@ const EventCard: React.FC<EventCardProps> = ({
 							className=" text-blue-500 cursor-pointer hover:text-blue-700"
 						>
 							{" "}
-							View Event
+							Official Link
 						</a>
 					</span>
 
@@ -63,13 +70,13 @@ const EventCard: React.FC<EventCardProps> = ({
 							src="https://www.svgrepo.com/show/376955/map-marker.svg"
 						/>{" "}
 						Location: {location}{" "}
-						<span className="ml-10 inline-flex">
+						{/* <span className="ml-10 inline-flex">
 							<img
 								className="h-5 w-5 mr-1"
 								src="https://cdn-icons-png.flaticon.com/512/12/12783.png"
 							/>{" "}
 							RSVP
-						</span>
+						</span> */}
 					</span>
 				</div>
 			</div>

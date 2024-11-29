@@ -1,15 +1,15 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css'
-import { GoogleOAuthProvider } from '@react-oauth/google'
-import UserLoginPage from './pages/UserLoginPage';
-import Dashboard from './pages/Dashboard';
-import EventPage from './pages/EventPage';
-import RegisterUserPage from './pages/RegisterUserPage';
-import UploadProfileImg from './pages/UploadProfileImg';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import UserLoginPage from "./pages/UserLoginPage";
+import Dashboard from "./pages/Dashboard";
+import EventPage from "./pages/EventPage";
+import RegisterUserPage from "./pages/RegisterUserPage";
+import UploadProfileImg from "./pages/UploadProfileImg";
+import RsvpPage from "./pages/RsvpPage";
 
 function App() {
-
-  return (
+	return (
 		<>
 			<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
 				<Routes>
@@ -18,10 +18,11 @@ function App() {
 					<Route path="/Dashboard" element={<Dashboard />}></Route>
 					<Route path="/UploadImg" element={<UploadProfileImg />}></Route>
 					<Route path="/event/:id" element={<EventPage />} />
+					<Route path="/rsvp" element={<RsvpPage />} />
 				</Routes>
 			</GoogleOAuthProvider>
 		</>
 	);
 }
 
-export default App
+export default App;
