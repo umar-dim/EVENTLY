@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const url = process.env.DATABASE_URL || "empty";
-
+const url =
+	process.env.DATABASE_URL ||
+	"empty";
 //connect to mongodb in order to interact with db
 mongoose
 	.connect(url)
@@ -8,8 +9,10 @@ mongoose
 	.catch((err) => console.log("MongoDB connection error:", err));
 
 // Model definition - only creates it if it doesn't already exist in the database
-const Event = mongoose.models.Event || mongoose.model("Event", eventModel);
-const user = mongoose.models.User || mongoose.model("User", users);
+// const Event = mongoose.models.Event || mongoose.model("Event", eventModel);
+const user = require("./models/users.js");
+// const user = mongoose.models.User || mongoose.model("User", users);
+const bcrypt = require("bcryptjs");
 
 // Function to check for existing events and insert new ones if necessary
 async function updateEvents(newEvents) {
@@ -88,5 +91,28 @@ async function getRsvpEvents(username) {
 		return res.status(500).json({ error: "Server error" });
 	}
 }
+
+// async function createAdminUser(username, email, password) {
+// 	try {
+// 		const salt = await bcrypt.genSalt(10);
+// 		const hash = await bcrypt.hash(password, salt);
+// 		const newAdmin = new user({
+// 			username: username,
+// 			email: email,
+// 			password: hash,
+// 			isAdmin: true, // Set the isAdmin field to true
+// 		});
+
+// 		console.log(url);
+// 		await newAdmin.save();
+
+// 		console.log("Admin user created:", newAdmin);
+// 	} catch (err) {
+// 		console.error("Error creating admin user:", err);
+// 	}
+// }
+
+// // call the createAdminUser function to create the admin user
+// createAdminUser("admin", "admin@admin.com", "newAdminPassword");
 
 module.exports = { updateEvents, addUserRsvp, getRsvpEvents };

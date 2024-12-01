@@ -37,6 +37,13 @@ const UserLoginPage: React.FC = () => {
           </span>
         </Link>
       </span>
+      {/* <div className="mt-6 flex justify-center"> */}
+        <Link to="/AdminLogin">
+          <button className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-700 transition duration-300">
+            Admin Login
+          </button>
+        </Link>
+      {/* </div> */}
     </>
   );
 };

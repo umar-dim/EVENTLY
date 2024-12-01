@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 // import Navbar from "./Navbar";
 
 interface EventPageProps {
@@ -56,6 +57,7 @@ const EventPage: React.FC = () => {
 
 	return (
 		<>
+			<Navbar profileImgUrl={event.profileImg} admin={false} />
 			<div className="flex flex-col items-center mt-10">
 				<h1 className="text-4xl font-bold text-black mb-5">{event.title}</h1>
 				<div className="w-3/4 p-5 border-2 rounded-lg shadow-md">

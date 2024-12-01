@@ -11,7 +11,8 @@ const UsersSchema = new Schema({
   imageName: { type: String, required: false },
   profileImgUrl: { type: String, required: false },
   rsvps: { type: Array, required: false },
-  rsvpsId : { type: Array, required: false },
+  rsvpsId: { type: Array, required: false },
+  isAdmin: { type: Boolean, required: false },
 });
 
 //save the schema model to the users variable

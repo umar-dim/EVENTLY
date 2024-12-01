@@ -42,7 +42,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <div className="font-bold text-black">
-        <Navbar profileImgUrl={profileImg || "empty"} />
+        <Navbar profileImgUrl={profileImg || "empty"} admin={false} />
         <h1 className="fixed top-28 left-0 ml-5 text-4xl">
           {`Welcome back, ${username}!, Here are your events:`}
         </h1>
@@ -59,6 +59,7 @@ const Dashboard: React.FC = () => {
                 link={event.link}
                 username={username || ""}
                 profileImg={profileImg || "empty"}
+                admin={false}
               />
             ))}
         </div>

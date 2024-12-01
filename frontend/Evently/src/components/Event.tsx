@@ -12,6 +12,7 @@ interface EventCardProps {
 	link: string;
 	username: string;
 	profileImg: string;
+	admin: boolean;
 }
 
 const EventCard: React.FC<EventCardProps> = ({
@@ -23,22 +24,39 @@ const EventCard: React.FC<EventCardProps> = ({
 	link,
 	username,
 	profileImg,
+	admin,
+	
 }) => {
 	const navigate = useNavigate();
 
 	const handleCardClick = () => {
-		navigate(`/event/${_id}`, {
-			state: {
-				_id,
-				title,
-				date,
-				time,
-				location,
-				link,
-				username,
-				profileImg,
-			},
-		});
+		if (!admin) {
+			navigate(`/event/${_id}`, {
+				state: {
+					_id,
+					title,
+					date,
+					time,
+					location,
+					link,
+					username,
+					profileImg,
+				},
+			});
+		} else { 
+			navigate(`/admin-event/${_id}`, {
+				state: {
+					_id,
+					title,
+					date,
+					time,
+					location,
+					link,
+					username,
+					profileImg,
+				},
+			})
+		}
 	};
 
 	return (

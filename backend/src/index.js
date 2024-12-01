@@ -93,6 +93,35 @@ passport.use(
 	)
 );
 
+// Admin-specific Passport strategy
+passport.use(
+	"admin",
+	new LocalStrategy(
+		{ usernameField: "email" },
+		async (email, password, done) => {
+			try {
+				const user = await users.findOne({ email: email });
+				if (!user || !user.isAdmin) {
+					console.log("User is not admin");
+					return done(null, false, { message: "Access denied" });
+				}
+				const isPasswordValid = await bcrypt.compare(password, user.password);
+				console.log(isPasswordValid);
+				if (!isPasswordValid) {
+					console.log("Invalid credentials");
+					return done(null, false, { message: "Invalid credentials" });
+				}
+				console.log(user);
+				return done(null, user);
+			} catch (error) {
+				return done(error);
+			}
+		}
+	)
+);
+
+
+
 //functions to serialize and deserialize user info in session for later use
 
 passport.serializeUser(function (user, done) {
@@ -172,15 +201,15 @@ app.get("/api/dashboard", async (req, res) => {
 			await user.save();
 		}
 		// Fetch all events from the database
-    const events = await Event.find();
-    const rsvpEvents = user.rsvps;
+		const events = await Event.find();
+		const rsvpEvents = user.rsvps;
 		// console.log(events);
 
 		res.status(200).json({
 			data: user?.profileImgUrl,
 			username: user.username,
-      events: events,
-      rsvpEvents: rsvpEvents
+			events: events,
+			rsvpEvents: rsvpEvents,
 		});
 	} else {
 		// res.redirect("/UserLogin");
@@ -323,6 +352,44 @@ app.get("/logout", function (req, res) {
 		}
 	});
 });
+
+// Admin login route
+app.post(
+	"/admin-login",
+	passport.authenticate("admin", {
+		failureRedirect: "/admin-login-failure",
+		successRedirect: "/admin-login-success",
+	})
+);
+
+// Admin login failure route
+app.get("/admin-login-failure", (req, res) => {
+	res.status(403).json({ error: "Access denied. Admin credentials required." });
+});
+
+// Admin login success route
+app.get("/admin-login-success", (req, res) => {
+	res.redirect("/AdminDashboard");
+});
+
+// Admin dashboard route
+app.get("/admin-dashboard", async (req, res) => {
+	if (req.isAuthenticated() && req.user.isAdmin) {
+		const events = await Event.find();
+		res.status(200).json({ events: events });
+	} else {
+		res.status(403).json({ error: "Access denied. Admin credentials required." });
+	}
+});
+
+app.get("/login-success", (req, res) => {
+	res.redirect("/");
+});
+
+app.get("/login-success", (req, res) => {
+	res.redirect("/");
+});
+
 app.get("/", (req, res) => {
 	if (!req.isAuthenticated()) {
 		res.redirect("/UserLogin");
@@ -339,7 +406,6 @@ app.post("/events/rsvp", async (req, res) => {
 		console.error("Error adding RSVP:", err);
 		res.status(500).json({ error: "Server error" });
 	}
-
 });
 // Serve static files from the React app's build folder
 app.use(express.static(path.join(__dirname, "../build")));
