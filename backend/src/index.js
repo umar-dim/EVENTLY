@@ -167,6 +167,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://6cf7-67-173-180-92.ngrok-free.app",
+    "https://cs-484-final-project-2.onrender.com",
   ],
   credentials: true,
 };
