@@ -31,7 +31,7 @@ const LoginCard: React.FC = () => {
     if (formData.email === "" || formData.password === "") {
       alert("field is empty");
     } else {
-      let request = await fetch("http://localhost:3000/login", {
+      let request = await fetch("https://cs-484-final-project.onrender.com/login", {
         method: "POST",
         credentials: "include",
         headers: {
