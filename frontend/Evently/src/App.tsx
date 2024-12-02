@@ -10,26 +10,29 @@ import RsvpPage from "./pages/RsvpPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import EventPageAdmin from "./pages/EventPageAdmin";
-
+import QRCodeGenerator from "./pages/QRCodeGenerator";
+import QRReader from "./pages/QRReader";
 function App() {
-	return (
-		<>
-			<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-				<Routes>
-					<Route path="/" element={<UserLoginPage />}></Route>
-					<Route path="/UserLogin" element={<UserLoginPage />}></Route>
-					<Route path="/RegisterUser" element={<RegisterUserPage />}></Route>
-					<Route path="/Dashboard" element={<Dashboard />}></Route>
-					<Route path="/UploadImg" element={<UploadProfileImg />}></Route>
-					<Route path="/event/:id" element={<EventPage />} />
-					<Route path="/rsvp" element={<RsvpPage />} />
-					<Route path="/AdminLogin" element={<AdminLoginPage />} />
-					<Route path="/AdminDashboard" element={<AdminDashboard />} />
-					<Route path="/admin-event/:id" element={<EventPageAdmin />} />
-				</Routes>
-			</GoogleOAuthProvider>
-		</>
-	);
+  return (
+    <>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <Routes>
+          <Route path="/" element={<UserLoginPage />}></Route>
+          <Route path="/UserLogin" element={<UserLoginPage />}></Route>
+          <Route path="/RegisterUser" element={<RegisterUserPage />}></Route>
+          <Route path="/Dashboard" element={<Dashboard />}></Route>
+          <Route path="/UploadImg" element={<UploadProfileImg />}></Route>
+          <Route path="/event/:id" element={<EventPage />} />
+          <Route path="/rsvp" element={<RsvpPage />} />
+          <Route path="/AdminLogin" element={<AdminLoginPage />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
+          <Route path="/admin-event/:id" element={<EventPageAdmin />} />
+          <Route path="/qr-generator/:id" element={<QRCodeGenerator />} />
+          <Route path="/qr-reader/:id" element={<QRReader />} />
+        </Routes>
+      </GoogleOAuthProvider>
+    </>
+  );
 }
 
 export default App;
