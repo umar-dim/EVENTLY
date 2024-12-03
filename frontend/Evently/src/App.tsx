@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EventPageAdmin from "./pages/EventPageAdmin";
 import QRCodeGenerator from "./pages/QRCodeGenerator";
 import QRReader from "./pages/QRReader";
+import SuccessPage from "./pages/SuccessPage";
 function App() {
   return (
     <>
@@ -29,6 +30,7 @@ function App() {
           <Route path="/admin-event/:id" element={<EventPageAdmin />} />
           <Route path="/qr-generator/:id" element={<QRCodeGenerator />} />
           <Route path="/qr-reader/:id" element={<QRReader />} />
+          <Route path="/qr-success" element={<SuccessPage />} />
         </Routes>
       </GoogleOAuthProvider>
     </>

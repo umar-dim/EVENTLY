@@ -459,6 +459,59 @@ app.post("/events/rsvp", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
+app.post("/checkQR", (req, res) => {
+  console.log("Request Body:", req.body);
+  try {
+    const { msg } = req.body;
+
+    if (!msg) {
+      console.error("Missing 'msg' in request body");
+      res.status(400).json({ error: "Invalid QR Code format" });
+      return;
+    }
+
+    let qrData;
+    try {
+      qrData = JSON.parse(msg);
+    } catch (parseError) {
+      console.error("Failed to parse 'msg':", parseError.message);
+      res.status(400).json({ error: "Invalid QR Code format" });
+      return;
+    }
+
+    console.log("Parsed QR Data:", qrData);
+
+    // Step 1: Verify the QR code's signature
+    const isSignatureValid = verifyQrData(qrData);
+    if (!isSignatureValid) {
+      console.error("Invalid QR Code signature");
+      res.status(403).json({ error: "QR Code signature verification failed" });
+      return;
+    }
+
+    // Step 2: Check the timestamp
+    const serverTimestamp = new Date();
+    const qrTime = new Date(qrData.time);
+
+    if (isNaN(qrTime.getTime())) {
+      console.error("Invalid 'time' in QR Code");
+      res.status(400).json({ error: "Invalid QR Code time format" });
+      return;
+    }
+
+    const timeDifference = serverTimestamp - qrTime;
+
+    if (timeDifference > 30000) {
+      res.status(403).json({ error: "QR Code has expired" });
+    } else {
+      res.status(200).json({ success: "You are checked in" });
+    }
+  } catch (error) {
+    console.error("Unexpected error:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Serve static files from the React app's build folder
 app.use(express.static(path.join(__dirname, "../build")));
 

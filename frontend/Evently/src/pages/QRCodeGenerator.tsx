@@ -3,7 +3,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import useWebSocket from "react-use-websocket";
 import Navbar from "../components/Navbar";
 const QRCodeGenerator: React.FC = () => {
-  const WS_URL = "ws://localhost:3000";
+  const WS_URL = "wss://www.evently.wiki";
   const [socketUrl, _setSocketUrl] = useState(WS_URL);
   const [qrCodeEncrypt, setQRCodeEncrypt] = useState();
   const {

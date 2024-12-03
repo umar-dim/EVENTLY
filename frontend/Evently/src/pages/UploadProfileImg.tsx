@@ -26,7 +26,7 @@ const UploadProfileImg: React.FC = () => {
         formData.append("userId", userId);
         //   let request = await fetch("http://localhost:3000/uploadImg", {
         const result = await axios.post(
-          "https://demo.evently.wiki/uploadImg",
+          "https://www.evently.wiki/uploadImg",
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },

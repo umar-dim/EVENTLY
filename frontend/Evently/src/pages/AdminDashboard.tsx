@@ -21,7 +21,7 @@ const AdminDashboard: React.FC = () => {
   const [events, setEvents] = useState<Event[] | null>(null);
   useEffect(() => {
     async function getDashboardData() {
-      const request = await fetch("http://localhost:3000/admin-dashboard", {
+      const request = await fetch("https://www.evently.wiki/admin-dashboard", {
         method: "GET",
         credentials: "include",
       });

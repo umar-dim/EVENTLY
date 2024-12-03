@@ -39,7 +39,7 @@ const UserRegisterCard: React.FC = () => {
     ) {
       alert("field is empty");
     } else {
-      let request = await fetch("https://demo.evently.wiki/registerUser", {
+      let request = await fetch("https://www.evently.wiki/registerUser", {
         method: "POST",
         headers: {
           Accept: "application/json",

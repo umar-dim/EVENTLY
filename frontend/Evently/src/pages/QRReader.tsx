@@ -1,46 +1,69 @@
 import React, { useEffect, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-// Interface for the scanned QR code data
 
 const QRReader: React.FC = () => {
   const [scannedData, setScannedData] = useState(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const location = useLocation();
   const { profileImg } = location.state || {};
+  const navigate = useNavigate();
   useEffect(() => {
     const scanner = new Html5QrcodeScanner(
       "reader",
       {
         fps: 10,
-        qrbox: { width: 250, height: 250 },
+        qrbox: { width: 300, height: 300 },
       },
       false
     );
 
-    // Render the qr scanner
     scanner.render(
-      (decodedText) => {
-        setErrorMessage(null);
+      async (decodedText) => {
+        console.log("Decoded Text:", decodedText); // Inspect the data
         try {
-          //parse the data so we can display to test
+          // Validate the decodedText before sending it
+          const payload = { msg: decodedText };
+
+          let request = await fetch("https://www.evently.wiki/checkQR", {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const result = await request.json();
+
+          if (!request.ok) {
+            console.error("Error response from server:", result.error);
+            alert(result.error);
+          } else {
+            navigate(`/qr-success`, {
+              state: {
+                profileImg: profileImg,
+              },
+            });
+            alert(result.success);
+          }
+
           const parsedData = JSON.parse(decodedText);
           const formattedData = parsedData.time;
-
           setScannedData(formattedData);
         } catch (error) {
+          console.error("Error handling QR code:", error);
           setErrorMessage("Invalid QR code data format.");
           setScannedData(null);
         }
       },
       () => {
-        //if there is an error display the error messsage
         setErrorMessage("Unable to scan the QR code. Try again.");
       }
     );
 
-    // Cleanup scanner when the component unmounts
     return () => {
       scanner.clear().catch((error) => {
         console.error("Failed to clear scanner:", error);
@@ -52,7 +75,6 @@ const QRReader: React.FC = () => {
     <>
       <Navbar profileImgUrl={profileImg} admin={false} />
       <div
-        className="mt-10"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -61,7 +83,6 @@ const QRReader: React.FC = () => {
           height: "100vh",
           width: "100%",
           padding: "10px",
-
           backgroundColor: "#f8f8f8",
           boxSizing: "border-box",
         }}
@@ -82,10 +103,11 @@ const QRReader: React.FC = () => {
           id="reader"
           style={{
             width: "100%",
-            maxWidth: "350px",
-            aspectRatio: "1", // Maintain square
-            backgroundColor: "#fff",
+            maxWidth: "500px",
+            height: "500px",
+            backgroundColor: "#e0e0e0", // Light gray background for better contrast
             borderRadius: "8px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
           }}
         ></div>
 
@@ -120,7 +142,7 @@ const QRReader: React.FC = () => {
             <p
               style={{
                 fontSize: "18px",
-                color: "red",
+                color: "#000",
               }}
             >
               {errorMessage}
@@ -129,7 +151,7 @@ const QRReader: React.FC = () => {
             <p
               style={{
                 fontSize: "18px",
-                color: "#999",
+                color: "#000",
               }}
             >
               No data scanned yet.

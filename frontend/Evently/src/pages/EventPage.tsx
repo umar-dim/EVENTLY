@@ -33,7 +33,7 @@ const EventPage: React.FC = () => {
   // Handlers
   const handleRSVP = async () => {
     // Add logic for RSVP, e.g., API call to register
-    const response = await fetch("http://localhost:3000/events/rsvp", {
+    const response = await fetch("https://www.evently.wiki/events/rsvp", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
