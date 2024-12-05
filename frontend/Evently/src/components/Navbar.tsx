@@ -48,6 +48,21 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
         </span>
       )}
       <span
+        onClick={() => {
+          fetch("https://www.evently.wiki/admin-fetch-events", {
+            method: "GET",
+            credentials: "include",
+          })
+            .then((response) => response.json())
+            .then((data) => console.log(data))
+            .catch((error) => console.error("Error:", error));
+          
+        }}
+        className="block py-2 px-4 cursor-pointer hover:bg-green-400"
+      >
+        Fetch Events
+      </span>
+      <span
         onClick={Logout}
         className="block py-2 px-4 cursor-pointer hover:bg-red-400"
       >

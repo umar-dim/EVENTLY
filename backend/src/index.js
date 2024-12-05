@@ -434,6 +434,10 @@ app.get("/admin-dashboard", async (req, res) => {
   }
 });
 
+app.get("admin-fetch-events", async (req, res) => {
+  scrapeUICEvents();
+  res.status(200).json({ success: "Fetch Success!" });
+});
 app.get("/login-success", (req, res) => {
   res.redirect("/");
 });
