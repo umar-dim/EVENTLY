@@ -7,7 +7,7 @@ const SuccessPage: React.FC = () => {
     <>
       <Navbar profileImgUrl={profileImg} admin={false} />
       <div>
-        <h1 className="text-black">Success your logged in! ✅</h1>
+        <h1 className="font-bold text-black">Success your logged in! ✅</h1>
       </div>
     </>
   );

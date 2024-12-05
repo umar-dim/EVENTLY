@@ -16,8 +16,6 @@ const QRCodeGenerator: React.FC = () => {
   useEffect(() => {
     if (lastMessage !== null) {
       const message = JSON.parse(lastMessage.data);
-      // const qr = JSON.parse(lastMessage.qr);
-      // setQrCodes(message.qr);
       setQRCodeEncrypt(message.data);
     }
   }, [lastMessage]);

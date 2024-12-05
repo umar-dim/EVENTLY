@@ -453,62 +453,74 @@ app.get("/", (req, res) => {
 app.post("/events/rsvp", async (req, res) => {
   const { eventId, username } = req.body; // Get the event ID and username from the request body
   try {
-    res = await addUserRsvp(username, eventId, res);
+    // const user = await users.findOne({ username: username });
+    const rsvpuser = await users.findOne({ username: username });
+    const rsvpevent = await Event.findOne({ _id: eventId });
+    // console.log(rsvpuser);
+    // console.log(rsvpevent);
+    if (rsvpuser.rsvps === undefined) {
+      rsvpuser.rsvps = [];
+    }
+
+    if (rsvpuser.rsvpsId.includes(eventId)) {
+      console.log("Already RSVP'd");
+
+      return res.status(200).json({ error: "Already RSVP'd" });
+    } else {
+      rsvpuser.rsvpsId.push(eventId);
+      rsvpuser.rsvps.push(rsvpevent);
+      await rsvpuser.save();
+      console.log(rsvpuser);
+      return res.status(200).json({ success: "Success! RSVP added" });
+    }
+
+    // const test = await Event.findOne({ _id: eventId });
+    // console.log(test);
   } catch (err) {
     console.error("Error adding RSVP:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 app.post("/checkQR", (req, res) => {
-  console.log("Request Body:", req.body);
+  const { msg } = req.body;
+
+  let qrData;
   try {
-    const { msg } = req.body;
+    qrData = JSON.parse(msg);
+  } catch (parseError) {
+    console.error("Failed to parse 'msg':", parseError.message);
+    res.status(400).json({ error: "Invalid QR Code format" });
+    return;
+  }
 
-    if (!msg) {
-      console.error("Missing 'msg' in request body");
-      res.status(400).json({ error: "Invalid QR Code format" });
-      return;
-    }
+  // Verify the QR code's signature to prevent tampering with data
+  const isSignatureValid = verifyQrData(qrData);
+  if (!isSignatureValid) {
+    console.error("Invalid QR Code signature");
+    res.status(403).json({ error: "QR Code signature verification failed" });
+    return;
+  }
 
-    let qrData;
-    try {
-      qrData = JSON.parse(msg);
-    } catch (parseError) {
-      console.error("Failed to parse 'msg':", parseError.message);
-      res.status(400).json({ error: "Invalid QR Code format" });
-      return;
-    }
+  //  Check the timestamp and use Nan to check if its in valid format
+  const serverTimestamp = new Date();
+  const qrTime = new Date(qrData.time);
 
-    console.log("Parsed QR Data:", qrData);
+  if (isNaN(qrTime.getTime())) {
+    console.error("Invalid 'time' in QR Code");
+    res.status(400).json({ error: "Invalid QR Code time format" });
+    return;
+  }
 
-    // Step 1: Verify the QR code's signature
-    const isSignatureValid = verifyQrData(qrData);
-    if (!isSignatureValid) {
-      console.error("Invalid QR Code signature");
-      res.status(403).json({ error: "QR Code signature verification failed" });
-      return;
-    }
+  //var used to check the time it was sent to server and time it was created
 
-    // Step 2: Check the timestamp
-    const serverTimestamp = new Date();
-    const qrTime = new Date(qrData.time);
+  const timeDifference = serverTimestamp - qrTime;
 
-    if (isNaN(qrTime.getTime())) {
-      console.error("Invalid 'time' in QR Code");
-      res.status(400).json({ error: "Invalid QR Code time format" });
-      return;
-    }
+  // if time the data was sent is greater than the inteval then send invalid qr error
 
-    const timeDifference = serverTimestamp - qrTime;
-
-    if (timeDifference > 30000) {
-      res.status(403).json({ error: "QR Code has expired" });
-    } else {
-      res.status(200).json({ success: "You are checked in" });
-    }
-  } catch (error) {
-    console.error("Unexpected error:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+  if (timeDifference > 300) {
+    res.status(403).json({ error: "QR Code has expired" });
+  } else {
+    res.status(200).json({ success: "You are checked in" });
   }
 });
 
@@ -554,7 +566,7 @@ wss.on("connection", function connection(ws) {
     const key = Buffer.from(process.env.AES_PRIVATE_KEY, "base64");
 
     ws.send(JSON.stringify({ data: qrData }));
-  }, 5000);
+  }, 100);
   ws.on("message", (msg) => {
     const qrData = JSON.parse(msg);
     console.log(`data recieved is: ${qrData}`);
