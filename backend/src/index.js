@@ -25,6 +25,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const users = require("./models/users.js");
 const Event = require("./models/events.js");
 const { addUserRsvp } = require("./database.js");
+const { scrapeUICEvents } = require("./webscrape.js");
 const app = express();
 const CLIENT_HOME_URL = "https://demo.evently.wiki/Dashboard";
 dotenv.config();
@@ -434,9 +435,43 @@ app.get("/admin-dashboard", async (req, res) => {
   }
 });
 
-app.get("admin-fetch-events", async (req, res) => {
-  const temp = await scrapeUICEvents();
-  res.status(200).json({ success: "Fetch Success!" });
+app.get("/admin-fetch-events", async (req, res) => {
+  //const temp = await scrapeUICEvents();
+  console.log("fetching events");
+  try {
+    // Check if the "events" collection already exists
+    const collections = await mongoose.connection.db
+      .listCollections()
+      .toArray();
+    const eventsCollectionExists = collections.some(
+      (col) => col.name === "events"
+    );
+
+    //if (!eventsCollectionExists) {
+    //  console.log("Events collection does not exist. Creating it now.");
+    //  await mongoose.connection.createCollection("events");
+    //}
+    var count = 0;
+    // Update the "events" collection with new events
+    const uicEvents = await scrapeUICEvents();
+    for (const event of uicEvents ) {
+      // Check if the event already exists in the collection based on title and date
+      const existingEvent = await Event.findOne({
+        title: event.title,
+        date: event.date,
+      });
+      if (!existingEvent) {
+        count++;
+        const newEvent = new Event(event);
+        //await newEvent.save();
+        console.log(`Added new event: ${event.title}`);
+      }
+    }
+    res.status(200).json({ success: `Fetched ${count} events` });
+  } catch (err) {
+    console.error("Error updating events:", err);
+    res.status(500).json({ error: "Error fetching events" });
+  }
 });
 app.get("/login-success", (req, res) => {
   res.redirect("/");

@@ -54,7 +54,7 @@ async function scrapeUICEvents() {
 }
 
 // Export the function for use in other files
-module.exports = scrapeUICEvents;
+module.exports = {scrapeUICEvents};
 
 // Usage example
 

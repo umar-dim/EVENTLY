@@ -39,7 +39,7 @@ async function updateEvents(newEvents) {
       });
       if (!existingEvent) {
         const newEvent = new Event(event);
-        await newEvent.save();
+        //await newEvent.save();
         console.log(`Added new event: ${event.title}`);
       } else {
         console.log(`Event already exists: ${event.title}`);
