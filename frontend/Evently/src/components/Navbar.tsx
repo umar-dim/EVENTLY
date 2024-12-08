@@ -49,7 +49,6 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
                 .then((response) => response.json())
                 .then((data) => console.log(data))
                 .catch((error) => console.error("Error:", error));
-              
             }}
             className="block py-2 px-4 cursor-pointer hover:bg-green-400"
           >
@@ -57,13 +56,22 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
           </span>
         </>
       ) : (
-        <span
-          onClick={() => navigate("/rsvp")}
-          className="block py-2 px-4 cursor-pointer hover:bg-blue-500"
-        >
-          Rsvp Events
-        </span>
+        <>
+          <span
+            onClick={() => navigate("/rsvp")}
+            className="block py-2 px-4 cursor-pointer hover:bg-blue-500"
+          >
+            Rsvp Events
+          </span>
+          <span
+            onClick={() => navigate("/about")}
+            className="block py-2 px-4 cursor-pointer hover:bg-blue-500"
+          >
+            About
+          </span>
+        </>
       )}
+
       <span
         onClick={Logout}
         className="block py-2 px-4 cursor-pointer hover:bg-red-400"
@@ -72,7 +80,6 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
       </span>
     </>
   );
-
 
   return (
     <nav
@@ -106,7 +113,7 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
           onClick={toggleMobileMenu}
         >
           <svg
-            className="h-8 w-8 text-black" // Larger and visible on all backgrounds
+            className="h-8 w-8 text-black"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             stroke="currentColor"
@@ -134,7 +141,7 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
             <img
               src={profileImgUrl}
               className="h-16 w-16 rounded-full"
-              alt="Profile"
+              alt=""
             />
           </div>
         </div>

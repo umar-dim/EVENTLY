@@ -13,6 +13,7 @@ import EventPageAdmin from "./pages/EventPageAdmin";
 import QRCodeGenerator from "./pages/QRCodeGenerator";
 import QRReader from "./pages/QRReader";
 import SuccessPage from "./pages/SuccessPage";
+import About from "./pages/About";
 function App() {
   return (
     <>
@@ -25,6 +26,7 @@ function App() {
           <Route path="/UploadImg" element={<UploadProfileImg />}></Route>
           <Route path="/event/:id" element={<EventPage />} />
           <Route path="/rsvp" element={<RsvpPage />} />
+          <Route path="/about" element={<About />} />
           <Route path="/AdminLogin" element={<AdminLoginPage />} />
           <Route path="/AdminDashboard" element={<AdminDashboard />} />
           <Route path="/admin-event/:id" element={<EventPageAdmin />} />
