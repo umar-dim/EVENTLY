@@ -41,14 +41,16 @@ const Navbar: React.FC<Props> = ({ profileImgUrl, admin }) => {
             Admin Dashboard
           </span>
           <span
-            onClick={() => {
-              fetch("https://www.evently.wiki/admin-fetch-events", {
+            onClick={async () => {
+              let request = await fetch("https://www.evently.wiki/admin-fetch-events", {
                 method: "GET",
                 credentials: "include",
-              })
-                .then((response) => response.json())
-                .then((data) => console.log(data))
-                .catch((error) => console.error("Error:", error));
+              });
+              const result = await request.json();
+              const message = result.error ? result.error : result.success;
+              console.log(message);
+              alert(message);
+              
             }}
             className="block py-2 px-4 cursor-pointer hover:bg-green-400"
           >
