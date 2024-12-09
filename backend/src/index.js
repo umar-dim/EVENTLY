@@ -463,14 +463,14 @@ app.get("/admin-fetch-events", async (req, res) => {
       if (!existingEvent) {
         count++;
         const newEvent = new Event(event);
-        //await newEvent.save();
+        await newEvent.save();
         console.log(`Added new event: ${event.title}`);
       }
     }
     res.status(200).json({ success: `Fetched ${count} events` });
   } catch (err) {
     console.error("Error updating events:", err);
-    res.status(500).json({ error: "Error fetching events" });
+    res.status(500).json({ error: `Error fetching events, error: ${err}` });
   }
 });
 app.get("/login-success", (req, res) => {
