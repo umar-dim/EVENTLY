@@ -1,19 +1,47 @@
-# Event manager UIC
+# 🎫 Event Manager UIC
 
-## Tech stack
+> A modern event management system for UIC campus events with QR code check-in functionality
 
-- React
-- Tailwind
-- Express.js
-- MongoDB
+## 🚀 Tech Stack
 
-## How to use the site:
+- **Frontend:** React, Tailwind CSS
+- **Backend:** Express.js
+- **Database:** MongoDB
 
-Hello, this website is about users seeing the events that are happening around UIC, RSVPing for them, and opening their camera to scan the QR code at the event. This will require two devices to test. In order to use the site, either log in with Google or sign in with your account. If you don't have an account and don't want to use Google, then just register. Then you'll be taken to the dashboard page, which has a list of all the events happening around campus that we webscraped off of UIC's website. Choose an event by clicking on one of them. Then click on the green RSVP button. It will save your RSVP'd event, and you can see your RSVP'd events at the RSVP page that's in the navbar. When you go to the RSVP page, click on one of the events you've RSVP'd for and then click on the blue "Open Camera" button. This will take you to a page where it asks for camera permissions. Click on the "Request Camera Permissions" button and then click "Start Scanning," and it will open up your camera. Then scan the QR code, and it will take you to the checked-in page. 
+## ✨ Features
 
-On the admin side, log in with these credentials for email and password: `admin@admin.com` and `newAdminPassword`, and you'll be taken to a dashboard page. Then you'll see the same dashboard page with all the events. Click on the "Fetch Events" button to get the latest list of UIC events. Click on an event and click "Show QR," which will show a new QR code every 100ms. With these QR codes, the users will scan these for their RSVP events in order to check in.
+- 🔄 Real-time event updates from UIC's website
+- 📱 Mobile-friendly design
+- 🔐 Google OAuth and email authentication
+- 📅 RSVP system for events
+- 📸 QR code scanning for event check-in
+- 👑 Admin dashboard for event management
 
-## Authors
+## 📖 How to Use
+
+### 👤 For Users
+
+1. **Login/Register**: Use Google OAuth or create an account
+2. **Browse Events**: View all events scraped from UIC's website
+3. **RSVP**: Click on an event and hit the green RSVP button
+4. **Check-in**: At the event, use your camera to scan the QR code
+   - Go to the RSVP page in the navbar
+   - Select your RSVP'd event
+   - Click "Open Camera"
+   - Grant camera permissions
+   - Scan the QR code to check in
+
+### 👨‍💼 For Admins
+
+1. **Login**: Use these credentials
+   - Email: `admin@admin.com`
+   - Password: `newAdminPassword`
+2. **Manage Events**:
+   - Click "Fetch Events" for latest UIC events
+   - Select any event to generate QR codes
+   - Use "Show QR" to display dynamic QR codes (updates every 100ms)
+
+## 👨‍💻 Authors
 
 This project was built collaboratively by:
 
